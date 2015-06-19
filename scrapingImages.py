@@ -12,9 +12,9 @@ def remove_digits(url):
 	return filename
 
 def scrapeImagesFromURL(artist, imageURLs):
-	# os.mkdir('scraped-images')
+	#os.mkdir('scraped-images')
 	os.chdir('scraped-images')
-	# os.mkdir(artist)
+	os.mkdir(artist)
 	os.chdir(artist)
 	for imageURL in imageURLs:
 		filename = remove_digits(imageURL)
@@ -38,15 +38,28 @@ def scraping(artist, artistURL):
 	scrapeImagesFromURL(artist, imageURLs)
 
 def main():
-	artists = ['VanGogh', 'Durer', 'JosephMallordTurner']
+	artists = ['VanGogh', 'Durer', 'JosephMallordTurner', 'Monet-and-Manet', 'Raphael',
+				'VanGogh2', 'Hudson-River-Artists', 'Klimt-and-Expressionism', 'Botticelli',
+				'Renoir', 'Bouguereau', 'Monet', 'Tissot', 'Cezanne']
 
 	artistURLs = ['https://picasaweb.google.com/106069219035575195726/VanGoghVolumeTwo',
 		'https://picasaweb.google.com/106069219035575195726/Durer?noredirect=1',
-		'https://picasaweb.google.com/106069219035575195726/JosephMallordTurner?noredirect=1']
+		'https://picasaweb.google.com/106069219035575195726/JosephMallordTurner?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/MonetAndManet',
+		'https://picasaweb.google.com/106069219035575195726/Raphael?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/VanGoghImages?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/HudsonRiverArtists?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/KlimtAndExpressionism?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/Botticelli?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/Renoir?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/Bouguereau?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/BonusMonetImages?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/Tissot?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/Cezanne?noredirect=1']
 
 	d = {artist: url for (artist, url) in zip(artists, artistURLs)}
 
-	for artist in artists[:2]:
+	for artist in artists[5:]:
 		scraping(artist, d[artist])
 
 if __name__ == '__main__':

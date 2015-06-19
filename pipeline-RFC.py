@@ -1,7 +1,9 @@
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.svm import SVC
-from sklearn.cross_validation import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.cross_validation import cross_val_score
 from pyimage.pipeline import ImagePipeline
+import cPickle
 
 def previewImages(imp):
 	imp.show('Durer', 1)
@@ -14,62 +16,77 @@ def previewImages(imp):
 	imp.show('JosephMallordTurner', 1)
 	imp.show('JosephMallordTurner', 79)
 
+def printF1CVScore(scores):
+	print "F1 Score: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() / 2)
+	print
+
+def svm(X, y, cv=8):
+    svm = SVC(C=1.5)
+    f1_scores = cross_val_score(svm, X, y, cv=cv, scoring='f1', n_jobs=-1)
+    print svm
+    printF1CVScore(f1_scores)
+    return svm
+
+def random_forest(X, y, cv=8):
+    rfModel = RandomForestClassifier(n_estimators=1000, n_jobs=-1)
+    f1_scores = cross_val_score(rfModel, X, y, cv=cv, scoring='f1', n_jobs=-1)
+    print rfModel
+    printF1CVScore(f1_scores)
+    # print "rf precision:", precision_score(y_test, y_predict)
+    # print "rf recall:", recall_score(y_test, y_predict)
+    return rfModel
+
+def gradient_boosting(X, y, cv=8):
+	gbModel = GradientBoostingClassifier(learning_rate=0.1, n_estimators=100)
+	f1_scores = cross_val_score(gbModel, X, y, cv=cv, scoring='f1', n_jobs=-1)
+	print gbModel
+	printF1CVScore(f1_scores)
+	return gbModel
+
+def knn(X, y, cv=8):
+    knn = KNeighborsClassifier()
+    f1_scores = cross_val_score(knn, X, y, cv=cv, scoring='f1', n_jobs=-1)
+    print knn
+    printF1CVScore(f1_scores)
+    return knn
+
 def printScore(model, X_train, X_test, y_train, y_test):
 	train_accuracy = model.score(X_train, y_train)
 	test_accuracy = model.score(X_test, y_test)
 	print model
-	print 'The training accuracy of the Random Forest classifier is: ', train_accuracy
-	print 'The test accuracy of the Random Forest classifier is: ', test_accuracy
+	print 'The training F1 score of the model is: ', train_accuracy
+	print 'The test F1 score of the model is: ', test_accuracy
 	print
 
 if __name__ == '__main__':
+	print 'Building Image Pipeline'
 	imp = ImagePipeline('scraped-images')
-	imp.read(sub_dirs = ['Durer', 'JosephMallordTurner', 'VanGogh'])
-	# previewImages(imp)
-	imp.resize(shape = (640, 640, 3))
-	# previewImages(imp)
-	imp.vectorize()
+	#imp.read(sub_dirs = ['Durer', 'JosephMallordTurner', 'VanGogh'])
+	imp.read(sub_dirs = ['Portraits', 'Landscapes'])
+	imp.resize(shape = (480, 480, 3))
+	imp.images_to_dominant_colors(n_clusters=3)
 
-	#Dummy Model
-	X1 = imp.features
-	y1 = imp.labels
-	X1_train, X1_test, y1_train, y1_test = train_test_split(X1, y1, test_size = 0.8)
-	RF_model_dummy = RandomForestClassifier(n_estimators = 10000, n_jobs=-1,  min_samples_leaf=2)
-	RF_model_dummy.fit(X1_train, y1_train)
-	printScore(RF_model_dummy, X1_train, X1_test, y1_train, y1_test)
-	# del RF_model_dummy
-
-	# SVM_dummy = SVC(C = 1.5)
-	# SVM_dummy.fit(X1_train, y1_train)
-	# printScore(SVM_dummy, X1_train, X1_test, y1_train, y1_test)
-
-	#Dummy Model with Desnoising
+	#Dummy Modeling with Grayscaling, Desnoising and Canny Edge Detection
 	imp.grayscale()
 	# previewImages(imp)
 	#imp.denoise_bilateral()
-	#imp.tv_denoise()
-	imp.canny(sigma=2.25, sub_dir = ['VanGogh'])
-	imp.canny(sigma=1.1, sub_dir = ['Durer', 'JosephMallordTurner'])
+	imp.tv_denoise(weight = 0.15)
+	#previewImages(imp)
+	imp.canny(sigma=1.5)
 	# imp.sobel()
-	previewImages(imp)
+	#previewImages(imp)
 	imp.vectorize()
-	X2 = imp.features
-	y2 = imp.labels
-	X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size = 0.8)
-	RF_model2 = RandomForestClassifier(n_estimators = 10000, min_samples_leaf = 2, n_jobs=-1)
-	RF_model2.fit(X2_train, y2_train)
-	printScore(RF_model2, X2_train, X2_test, y2_train, y2_test)
+	X = imp.features
+	X_tilda = imp.merge_features_dominant_colors()
+	y = imp.labels
 
-	# SVM_model2 = SVC(C = 1.5)
-	# SVM_model2.fit(X2_train, y2_train)
-	# printScore(SVM_model2, X2_train, X2_test, y2_train, y2_test)
+	# with open(r"image-pipeline2.pickle", "wb") as output_file:
+	# 	cPickle.dump(imp, output_file)
+	
+	#Run Dummy Models
+	print 'Running Dummy Models'
+	svModel = svm(X, y, cv=8)
+	rfModel = random_forest(X,y, cv=8)
+	gbModel = gradient_boosting(X, y, cv=8)
+	knnModel = knn(X, y, cv=8)
 
-	# imp.tv_denoise(weight = 1.2)
-	# previewImages(imp)
-	# imp.vectorize()
-	# X3 = imp.features
-	# y3 = imp.labels
-	# X3_train, X3_test, y3_train, y3_test = train_test_split(X3, y3, test_size = 0.8)
-	# RF_model3 = RandomForestClassifier(n_jobs=-1)
-	# RF_model3.fit(X3_train, y3_train)
-	# printScore(RF_model3, X3_train, X3_test, y3_train, y3_test)
