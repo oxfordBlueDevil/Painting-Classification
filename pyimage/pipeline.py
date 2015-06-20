@@ -1,4 +1,5 @@
 from sklearn.cluster import MiniBatchKMeans
+from sklearn.feature_extraction.image import extract_patches_2d
 from skimage import color, transform, restoration, io, feature
 from skimage import filters
 import matplotlib.pyplot as plt
@@ -25,6 +26,7 @@ class ImagePipeline(object):
         # Image variables that are filled in when read() and vectorize()
         self.img_lst2 = []
         self.img_names2 = []
+        self.patches_lst2 = []
         self.features = None
         self.labels = None
 
@@ -201,54 +203,76 @@ class ImagePipeline(object):
                 new_img_lst2.append([func(img_arr, **params).astype(float) for img_arr in img_lst])
             self.img_lst2 = new_img_lst2
 
-    def grayscale(self, sub_dir=None, img_ind=None):
+    def transform_patches(self, func, params):
+        new_patches_lst2 = []
+        for patch_lst in self.patches_lst2:
+            new_patches_lst2.append([func(patch_arr, **params).astype(float) for patch_arr in patch_lst])
+        self.patches_lst2 = new_patches_lst2
+
+    def grayscale(self, sub_dir=None, img_ind=None, isImage=True):
         """
         Grayscale all the images in self.img_lst2
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
         """
-        self.transform(color.rgb2gray, {}, sub_dir=sub_dir, img_ind=img_ind)
+        if isImage:
+            self.transform(color.rgb2gray, {}, sub_dir=sub_dir, img_ind=img_ind)
+        else:
+            self.transform_patches(color.rgb2gray, {})
 
-    def canny(self, sigma = 2.5, sub_dir=None, img_ind=None):
+    def canny(self, sigma = 2.5, sub_dir=None, img_ind=None, isImage=True):
         """
         Apply the canny edge detection algorithm to all the images in self.img_lst2
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
         """
-        self.transform(feature.canny, dict(sigma=sigma), sub_dir=sub_dir, img_ind=img_ind)
+        if isImage:
+            self.transform(feature.canny, dict(sigma=sigma), sub_dir=sub_dir, img_ind=img_ind)
+        else:
+            self.transform_patches(feature.canny, dict(sigma=sigma))
 
-    def sobel(self, sub_dir=None, img_ind=None):
+    def sobel(self, sub_dir=None, img_ind=None, isImage=True):
         """
         Apply the sobel edge detection algorithm to all the images in self.img_lst2
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
         """
-        self.transform(filters.sobel, {}, sub_dir=sub_dir, img_ind=img_ind)
+        if isImage:
+            self.transform(filters.sobel, {}, sub_dir=sub_dir, img_ind=img_ind)
+        else:
+            self.transform_patches(filters.sobel, {})
 
-    def denoise_bilateral(self, sigma_range = 0.15, sub_dir=None, img_ind=None):
+    def denoise_bilateral(self, sigma_range = 0.15, sub_dir=None, img_ind=None, isImage=True):
         """
         Apply to Bi-lateral denoise to all the images in self.img_lst2
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
         """
-        self.transform(restoration.denoise_bilateral,
+        if isImage:
+            self.transform(restoration.denoise_bilateral,
                        dict(sigma_range = sigma_range),
                        sub_dir=sub_dir, img_ind=img_ind)
+        else:
+            self.transform_patches(estoration.denoise_bilateral, dict(sigma_range = sigma_range))
 
-    def tv_denoise(self, weight=2, multichannel=True, sub_dir=None, img_ind=None):
+    def tv_denoise(self, weight=2, multichannel=True, sub_dir=None, img_ind=None, isImage=True):
         """
         Apply to total variation denoise to all the images in self.img_lst2
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
         """
-        self.transform(restoration.denoise_tv_chambolle,
-                       dict(weight=weight, multichannel=multichannel),
-                       sub_dir=sub_dir, img_ind=img_ind)
+        if isImage:
+            self.transform(restoration.denoise_tv_chambolle,
+                           dict(weight=weight, multichannel=multichannel),
+                           sub_dir=sub_dir, img_ind=img_ind)
+        else:
+            self.transform_patches(restoration.denoise_tv_chambolle,
+                           dict(weight=weight, multichannel=multichannel))
 
     def resize(self, shape, save=False):
         """
@@ -268,6 +292,7 @@ class ImagePipeline(object):
         return lst_of_pixels
 
     def images_to_dominant_colors(self, n_clusters=3):
+        print 'Determining the dominant colors for each image in the pipeline'
         image_dominant_colors = []
         for img_list in self.img_lst2:
             for img_arr in img_list:
@@ -278,8 +303,44 @@ class ImagePipeline(object):
                 image_dominant_colors.append(np.ravel(clusters))
         self.dominant_colors = np.r_[image_dominant_colors]
 
-    def merge_features_dominant_colors(self):
-        return np.concatenate((self.features, self.dominant_colors), axis = 1)
+    def merge_features_dominant_colors(self, isImage=True):
+        if isImage:
+            return np.concatenate((self.features, self.dominant_colors), axis = 1)
+        else:
+            return np.concatenate((self.patch_features, self.patch_dominant_colors), axis = 1)
+
+    def extract_patch(self, img_array, patch_size=(80,96), max_patches=30):
+        """
+        Reshape a 2D image into a collection of patches and extract it into a dedicated array
+        """
+        patches = extract_patches_2d(img_array, patch_size, max_patches)
+        self.n_patches = patches.shape[0]
+        return list(patches)
+
+    def images_to_patches(self):
+        """
+        Extract patches for all images in the pipeline.
+        """
+        print 'Extracting patches from all images in the pipeline.'
+        for img_list in self.img_lst2:
+            for img_arr in img_list:
+                patches = self.extract_patch(img_arr)
+                self.patches_lst2.append(patches)
+
+    def patches_to_dominant_colors(self, n_clusters=3):
+        """
+        Determine the dominant colors for each patch in the pipeline
+        """
+        print 'Determining the dominant colors for each patch in the pipeline'
+        patch_dominant_colors = []
+        for patch_list in self.patches_lst2:
+            for patch_arr in patch_list:
+                patch_Pixels = np.r_[self.image_to_pixels(patch_arr)]
+                KMeans_Model = MiniBatchKMeans(n_clusters = n_clusters)
+                KMeans_Model.fit(patch_Pixels)
+                clusters = KMeans_Model.cluster_centers_
+                patch_dominant_colors.append(np.ravel(clusters))
+        self.patch_dominant_colors = np.r_[patch_dominant_colors]
 
     def _vectorize_features(self):
         """
@@ -291,6 +352,16 @@ class ImagePipeline(object):
         self.test = row_tup
         self.features = np.r_[row_tup]
 
+    def _vectorize_patch_features(self):
+        """
+        Take a list of patches and vectorize all the patches. Returns a feature matrix where each
+        row represents an image
+        """
+        row_tup = tuple(patch_arr.ravel()[np.newaxis, :]
+                        for patch_lst in self.patches_lst2 for patch_arr in patch_lst)
+        self.test = row_tup
+        self.patch_features = np.r_[row_tup]    
+
     def _vectorize_labels(self):
         """
         Convert file names to a list of y labels (in the example it would be either cat or dog, 1 or 0)
@@ -299,11 +370,29 @@ class ImagePipeline(object):
         self.labels = np.concatenate([np.repeat(i, len(img_names))
                                       for i, img_names in enumerate(self.img_names2)])
 
-    def vectorize(self):
+    def _vectorize_patch_labels(self):
+        """
+        Convert file names to a list of y labels (in the example it would be either cat or dog, 1 or 0)
+        corresponding to patches for each image
+        """
+        if self.labels is None:
+            self._vectorize_labels()
+        self.patch_labels = np.repeat(self.labels, self.n_patches)
+
+    def vectorize(self, isImage=True):
         """
         Return (feature matrix, the response) if output is True, otherwise set as instance variable.
         Run at the end of all transformations
         """
-        self._vectorize_features()
-        self._vectorize_labels()
+        print 'Genereating the Features Matrix'
+        if isImage:
+            self._vectorize_features()
+            self._vectorize_labels()
+        else:
+            if not self.patches_lst2:
+                self.images_to_patches()
+                self.patches_to_dominant_colors(n_clusters=3)
+            self._vectorize_patch_features()
+            self._vectorize_patch_labels()
+
 

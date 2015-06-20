@@ -40,7 +40,7 @@ def scraping(artist, artistURL):
 def main():
 	artists = ['VanGogh', 'Durer', 'JosephMallordTurner', 'Monet-and-Manet', 'Raphael',
 				'VanGogh2', 'Hudson-River-Artists', 'Klimt-and-Expressionism', 'Botticelli',
-				'Renoir', 'Bouguereau', 'Monet', 'Tissot', 'Cezanne']
+				'Renoir', 'Bouguereau', 'Monet', 'Tissot', 'Cezanne', 'Cubism']
 
 	artistURLs = ['https://picasaweb.google.com/106069219035575195726/VanGoghVolumeTwo',
 		'https://picasaweb.google.com/106069219035575195726/Durer?noredirect=1',
@@ -55,12 +55,15 @@ def main():
 		'https://picasaweb.google.com/106069219035575195726/Bouguereau?noredirect=1',
 		'https://picasaweb.google.com/106069219035575195726/BonusMonetImages?noredirect=1',
 		'https://picasaweb.google.com/106069219035575195726/Tissot?noredirect=1',
-		'https://picasaweb.google.com/106069219035575195726/Cezanne?noredirect=1']
+		'https://picasaweb.google.com/106069219035575195726/Cezanne?noredirect=1',
+		'https://picasaweb.google.com/106069219035575195726/AbstractArtCubism?noredirect=1']
 
 	d = {artist: url for (artist, url) in zip(artists, artistURLs)}
 
-	for artist in artists[5:]:
-		scraping(artist, d[artist])
+	# for artist in artists[5:]:
+	# 	scraping(artist, d[artist])
+
+	scraping(artists[-1], d[artists[-1]])
 
 if __name__ == '__main__':
 	main()
