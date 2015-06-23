@@ -117,7 +117,7 @@ class ImagePipeline(object):
         filtered_sub_dir = filter(self._accepted_dir_name, self.raw_sub_dir_names)
         self.sub_dirs = map(self._path_relative_to_parent, filtered_sub_dir)
 
-    def read(self, sub_dirs=tuple('all')):
+    def read(self, sub_dirs=tuple('all'), subsample=False):
         """
         Read images from each sub directories into a list of matrix (self.img_lst2)
 
@@ -129,12 +129,21 @@ class ImagePipeline(object):
         # Assign the sub dir names based on what is passed in
         self._assign_sub_dirs(sub_dirs=sub_dirs)
 
-        for sub_dir in self.sub_dirs:
-            img_names = filter(self._accpeted_file_format, os.listdir(sub_dir))
-            self.img_names2.append(img_names)
+        if type(subsample) == int:
+            for sub_dir in self.sub_dirs:
+                img_names = filter(self._accpeted_file_format, os.listdir(sub_dir)[:subsample])
+                self.img_names2.append(img_names)
 
-            img_lst = [io.imread(os.path.join(sub_dir, fname)) for fname in img_names]
-            self.img_lst2.append(img_lst)
+                img_lst = [io.imread(os.path.join(sub_dir, fname)) for fname in img_names]
+                self.img_lst2.append(img_lst)
+
+        else:            
+            for sub_dir in self.sub_dirs:
+                img_names = filter(self._accpeted_file_format, os.listdir(sub_dir))
+                self.img_names2.append(img_names)
+
+                img_lst = [io.imread(os.path.join(sub_dir, fname)) for fname in img_names]
+                self.img_lst2.append(img_lst)
 
     def save(self, keyword):
         """
@@ -317,14 +326,14 @@ class ImagePipeline(object):
         self.n_patches = patches.shape[0]
         return list(patches)
 
-    def images_to_patches(self):
+    def images_to_patches(self, patch_size=(80,96), max_patches=30):
         """
         Extract patches for all images in the pipeline.
         """
         print 'Extracting patches from all images in the pipeline.'
         for img_list in self.img_lst2:
             for img_arr in img_list:
-                patches = self.extract_patch(img_arr)
+                patches = self.extract_patch(img_arr, patch_size=patch_size, max_patches=max_patches)
                 self.patches_lst2.append(patches)
 
     def patches_to_dominant_colors(self, n_clusters=3):
@@ -384,7 +393,7 @@ class ImagePipeline(object):
         Return (feature matrix, the response) if output is True, otherwise set as instance variable.
         Run at the end of all transformations
         """
-        print 'Genereating the Features Matrix'
+        print 'Generating the Features Matrix'
         if isImage:
             self._vectorize_features()
             self._vectorize_labels()
