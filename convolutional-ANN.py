@@ -86,7 +86,7 @@ if __name__ == '__main__':
 	y_patches = imp.patch_labels.astype(np.int32)
 
 	X_scaled = StandardScaler().fit_transform(X_patches)
-	X_scaled = X_scaled.reshape(-1, 3, 360, 360)
+	X_scaled = X_scaled.reshape(-1, 3, 224, 224)
 	X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_patches, test_size=0.2, random_state=23)
 
 	nnet = NeuralNet(
