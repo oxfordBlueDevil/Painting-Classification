@@ -7,6 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from pyimage.pipeline import ImagePipeline
 from sklearn.metrics import f1_score, classification_report
 import numpy as np
+import cPickle
 
 if __name__ == '__main__':
 	print 'Building Image Pipeline'
@@ -57,8 +58,8 @@ if __name__ == '__main__':
 
 	          # Optimization
 	          update=nesterov_momentum,
-	          update_learning_rate=0.0001,
-	          update_momentum=0.5,
+	          update_learning_rate=0.001,
+	          update_momentum=0.3,
 	          max_epochs=100,
 
 	          # Others,
@@ -66,55 +67,9 @@ if __name__ == '__main__':
 	          verbose=1,
 	    )
 
-	# nnet2 = NeuralNet(
-	#     layers=[
-	#         ('input', layers.InputLayer),
-	#         ('conv1', layers.Conv2DLayer),
-	#         ('pool1', layers.MaxPool2DLayer),
-	#         ('dropout1',layers.DropoutLayer),
-	#         ('conv2', layers.Conv2DLayer),
-	#         ('pool2', layers.MaxPool2DLayer),
-	#         ('relu1',layers.DenseLayer),
-	#         ('conv3', layers.Conv2DLayer),
-	#         ('pool3', layers.MaxPool2DLayer),
-	#         ('hidden4', layers.DenseLayer),
-	#         ('output', layers.DenseLayer),
-	#         ],
-	#     input_shape=(None, 3, 360, 360),
-	#     conv1_num_filters=32, conv1_filter_size=(3, 3), pool1_pool_size=(2, 2),
-	#     conv2_num_filters=64, conv2_filter_size=(2, 2), pool2_pool_size=(2, 2),
-	#     conv3_num_filters=128, conv3_filter_size=(2, 2), pool3_pool_size=(2, 2),
-	    
- #        dropout1_p=0.5,
- #        relu1_num_units=512
- #        relu1_nonlinearity=rectify
-
-	#     #HidDen Layer 4
-	#     hidden4_num_units=180,
-	#     hidden4_nonlinearity=rectify,
-	
-	#     #Output Layer
-	#     output_num_units=3, 
-	#     output_nonlinearity=softmax,
-
-	#     #Optimization
-	#     update=nesterov_momentum,
-	#     update_learning_rate=0.001,
-	#     update_momentum=0.5,
-	#     max_epochs=100,
-
-
-	#     regression=False,
-	#     verbose=1,
-	#     )
-
 	# # Train the NN
 	print 'Training Neural Network'
 	nnet.fit(X_train, y_train)
-	# X = StandardScaler().fit_transform(X)
-	# X = X.reshape(-1, 3, 360, 360)
-	# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=23)
-	# nnet2.fit(X_train, y_train)
 
 	print
 	# Make predictions
@@ -123,3 +78,6 @@ if __name__ == '__main__':
 	print "f1 score:", f1_score(y_test, y_predictions, average='weighted')
 
 	print classification_report(y_test, y_predictions)
+
+	with open(r"Pickled-Models/three-artist-neural-network.pickle", "wb") as output_file:
+		cPickle.dump(nnet, output_file)
