@@ -109,11 +109,11 @@ if __name__ == '__main__':
 	    input_shape=(None, 3, 224, 224),
 	    conv1_num_filters=96, conv1_filter_size=(11, 11), conv1_W=Normal(std=0.01, mean=0), conv1_stride=4,
 	    pool1_pool_size=(2, 2),
-	    conv2_num_filters=256, conv2_filter_size=(2, 2), conv2_W=Normal(std=0.01, mean=0), conv2_b=Constant(val=1.0), 
+	    conv2_num_filters=256, conv2_filter_size=(5, 5), conv2_W=Normal(std=0.01, mean=0), conv2_b=Constant(val=1.0), 
 	    pool2_pool_size=(2, 2),
-	    conv3_num_filters=384, conv3_filter_size=(2, 2), conv3_W=Normal(std=0.01, mean=0),
-	    conv4_num_filters=384, conv4_filter_size=(2, 2), conv4_W=Normal(std=0.01, mean=0), conv4_b=Constant(val=1.0),
-	    conv5_num_filters=256, conv5_filter_size=(2, 2), conv5_W=Normal(std=0.01, mean=0), conv5_b=Constant(val=1.0),
+	    conv3_num_filters=384, conv3_filter_size=(3, 3), conv3_W=Normal(std=0.01, mean=0),
+	    conv4_num_filters=384, conv4_filter_size=(3, 3), conv4_W=Normal(std=0.01, mean=0), conv4_b=Constant(val=1.0),
+	    conv5_num_filters=256, conv5_filter_size=(3, 3), conv5_W=Normal(std=0.01, mean=0), conv5_b=Constant(val=1.0),
 	    pool3_pool_size=(2,2),
 	    
 	    #Dropout Layer 1
@@ -136,6 +136,7 @@ if __name__ == '__main__':
 	
 	    #Output Layer
 	    output_num_units=3, 
+	    output_W=Normal(std=0.01, mean=0),
 	    output_nonlinearity=softmax,
 
 	    #Optimization
