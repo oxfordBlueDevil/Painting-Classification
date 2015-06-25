@@ -12,15 +12,12 @@ import cPickle
 if __name__ == '__main__':
 	print 'Building Image Pipeline'
 	imp = ImagePipeline('scraped-images')
-	imp.read(sub_dirs = ['Cezanne', 'VanGogh', 'JosephMallordTurner'])
+	imp.read(sub_dirs = ['Portraits', 'Landscapes'])
 	#imp.read(sub_dirs = ['Durer', 'Klimt-and-Expressionism'])
 	imp.resize(shape = (360, 360, 3))
 	imp.images_to_patches(patch_size=(80,96), max_patches=30)
 
 	imp.vectorize()
-	# X = imp.features.astype(np.float32)
-	# X_tilda = imp.merge_features_dominant_colors()
-	# y = imp.labels.astype(np.int32)
 	imp.vectorize(isImage=False)
 	X_patches = imp.patch_features.astype(np.float32)
 	y_patches = imp.patch_labels.astype(np.int32)
@@ -75,9 +72,9 @@ if __name__ == '__main__':
 	# Make predictions
 	y_predictions = nnet.predict(X_test)
 	# y_predictions = nnet2.predict(X_test)
-	print "f1 score:", f1_score(y_test, y_predictions, average='weighted')
+	print "f1 score:", f1_score(y_test, y_predictions)
 
 	print classification_report(y_test, y_predictions)
 
-	# with open(r"Pickled-Models/three-artist-neural-network.pickle", "wb") as output_file:
-	# 	cPickle.dump(nnet, output_file, protocol=cPickle.HIGHEST_PROTOCOL)
+	with open(r"Pickled-Models/portrait-neural-network.pickle", "wb") as output_file:
+		cPickle.dump(nnet, output_file, protocol=cPickle.HIGHEST_PROTOCOL)

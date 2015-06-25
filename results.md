@@ -1,24 +1,4 @@
-##Back_up Plan
-
-###Preprocessing
-
-####scrapingImages.py
-* This module scrapes high-resolution paintings for different European Artists from a Picasa Web Album.
-The downloaded image resolutions are around 800 x 800. The module then stores them in individual directories corresponding to different artists.
-
-####pyimage.pipeline.py
-* This module allows us to build our image pipeline and creates the capability to perform a variety of image transformation filters for our EDA & Feature extraction phase.
-    1. Denoise Bilateral Denoising
-    2. Total Variance Denoising
-    3. Resizing All images at once
-    3. Grayscaling Transformation
-    4. Canny edge detector
-    5. Sobel edge detector
-
-* We also created an implemenation for dominant color exctrations. We use mini batch k means to extract the most dominant colors for each image in our image pipeline.
-
-
-### Portrait vs. Landscape Model
+### Modelling
 * To test whether we can build an painting image detection model, we decided to experiment with Random Forest, Gradient Boosting, Support Vector Machine, K Nearest Neighbor Classifiers to determine whether an image is a Portrait painting or a Landscape painting. 
 
 * We obtained the following F1 scores by cross-validation where K = 8:
