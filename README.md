@@ -36,7 +36,7 @@ The downloaded image resolutions are around 800 x 800. The module then stores th
   hidden3               (None, 512)             produces     512 outputs
   output                (None, 3)               produces       3 outputs
   epoch    train loss    valid loss    train/val    valid acc  dur
-  
+
 -------  ------------  ------------  -----------  -----------  ------
       1       0.66219       0.60958      1.08630      0.69423  41.58s
       2       0.57866       0.59109      0.97897      0.70242  40.85s
@@ -81,7 +81,7 @@ avg / total       0.72      0.73      0.72      5802
 
 * We've selected the Neural Network as our MVP Portrait Classification.
 
-### Artist Classification
+### Artist Classification (neuralNet.py)
 * To test whether we can build an painting image detection model, we decided to experiment with Random Forest, Gradient Boosting, Support Vector Machine, K Nearest Neighbor Classifiers, and a Neural Network to determine whether an image is a Portrait painting or a Landscape painting. 
 
 * We obtained the following F1 scores by cross-validation where K = 8:
