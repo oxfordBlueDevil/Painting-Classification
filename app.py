@@ -6,8 +6,8 @@ import os
 # browser the file that the user just uploaded
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug import secure_filename
-from code.mvpNeuralNet import ArtistClassifier, PortraitClassifier
-from code.uploadImagePipeline import preProcessUploadedImage
+from mycode.mvpNeuralNet import ArtistClassifier, PortraitClassifier
+from mycode.uploadImagePipeline import preProcessUploadedImage
 
 # Initialize the Flask application
 app = Flask(__name__)
