@@ -3,7 +3,7 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cross_validation import cross_val_score, train_test_split
 from sklearn.metrics import f1_score
-from pyimage.pipeline import ImagePipeline
+from pipeline import ImagePipeline
 import cPickle
 
 def printF1CVScore(scores):

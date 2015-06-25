@@ -6,7 +6,7 @@ from nolearn.lasagne import NeuralNet
 from nolearn.lasagne import BatchIterator
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import StandardScaler
-from pyimage.pipeline import ImagePipeline
+from pipeline import ImagePipeline
 from sklearn.metrics import f1_score, classification_report
 import numpy as np
 import cPickle

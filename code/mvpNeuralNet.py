@@ -3,14 +3,14 @@ from sklearn.metrics import f1_score
 from skimage import io, transform
 from sklearn.feature_extraction.image import extract_patches_2d
 from sklearn.preprocessing import StandardScaler
-from pyimage.pipeline import ImagePipeline
+from pipeline import ImagePipeline
 import cPickle as pickle
 import numpy as np
 import random
 
 class ArtistClassifier(object):
 	def __init__(self):
-		with open(r"../Pickled-Models/three-artist-neural-network.pickle", "rb") as nn:
+		with open(r"Pickled-Models/three-artist-neural-network.pickle", "rb") as nn:
 			self.nn = pickle.load(nn)
 	
 	def predict(self, X_test):
@@ -21,7 +21,7 @@ class ArtistClassifier(object):
 
 class PortraitClassifier(object):
 	def __init__(self):
-		with open(r"../Pickled-Models/portrait-neural-network.pickle", "rb") as nn:
+		with open(r"Pickled-Models/portrait-neural-network.pickle", "rb") as nn:
 			self.nn = pickle.load(nn)
 	
 	def predict(self, X_test):
