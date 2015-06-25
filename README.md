@@ -36,6 +36,7 @@ The downloaded image resolutions are around 800 x 800. The module then stores th
   hidden3               (None, 512)             produces     512 outputs
   output                (None, 3)               produces       3 outputs
   epoch    train loss    valid loss    train/val    valid acc  dur
+  
 -------  ------------  ------------  -----------  -----------  ------
       1       0.66219       0.60958      1.08630      0.69423  41.58s
       2       0.57866       0.59109      0.97897      0.70242  40.85s
@@ -109,6 +110,7 @@ avg / total       0.72      0.73      0.72      5802
   hidden2               (None, 512)             produces     512 outputs
   hidden3               (None, 512)             produces     512 outputs
   output                (None, 3)               produces       3 outputs
+
 -------  ------------  ------------  -----------  -----------  ------
       1       0.79505       0.73670      1.07921      0.68776  24.97s
       2       0.69658       0.69073      1.00847      0.70283  26.31s
