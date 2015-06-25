@@ -1,22 +1,11 @@
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.cross_validation import cross_val_score, train_test_split
+from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import f1_score
 from pyimage.pipeline import ImagePipeline
 import cPickle
-
-def previewImages(imp):
-	imp.show('Durer', 1)
-	imp.show('Durer', 3)
-	imp.show('Durer', 5)
-	imp.show('VanGogh', 145)
-	imp.show('VanGogh', 134)
-	imp.show('VanGogh', 56)
-	imp.show('JosephMallordTurner', 183)
-	imp.show('JosephMallordTurner', 1)
-	imp.show('JosephMallordTurner', 79)
 
 def printEstimatorScores(model, X_test, y_test):
 	y_predict = model.predict(X_test)
@@ -72,20 +61,9 @@ def knn(X, y, cv=8):
     printEstimatorScores(knn, X_test, y_test)
     return knn
 
-def multinomial_naivebayes(X, y, cv=8):
-    clf = MultinomialNB()
-    print 'Naive Bayes Cross Validation'
-    f1_scores = cross_val_score(clf, X, y, cv=cv, scoring='f1', n_jobs=-1)
-    printF1CVScore(f1_scores)
-    print clf
-    X_train, X_test, y_train, y_test = train_test_split(X, y,  test_size = 0.2, random_state=23)
-    clf.fit(X_train, y_train)
-    printEstimatorScores(clf, X_test, y_test)
-    return clf
-
 if __name__ == '__main__':
 	print 'Building Image Pipeline'
-	imp = ImagePipeline('scraped-images')
+	imp = ImagePipeline('../scraped-images')
 	imp.read(sub_dirs = ['Cezanne', 'VanGogh', 'JosephMallordTurner'])
 	#imp.read(sub_dirs = ['Durer', 'Klimt-and-Expressionism'])
 	imp.resize(shape = (480, 480, 3))
@@ -93,15 +71,6 @@ if __name__ == '__main__':
 	imp.patches_to_dominant_colors(n_clusters=3)
 	#imp.images_to_dominant_colors(n_clusters=3)
 
-	#Dummy Modeling with Grayscaling, Desnoising and Canny Edge Detection
-	#imp.grayscale()
-	#previewImages(imp)
-	#imp.denoise_bilateral()
-	#imp.tv_denoise(weight = 0.15)
-	#previewImages(imp)
-	#imp.canny(sigma=1.5)
-	# imp.sobel()
-	#previewImages(imp)
 	imp.vectorize()
 	X = imp.features
 	# X_tilda = imp.merge_features_dominant_colors()
@@ -116,16 +85,29 @@ if __name__ == '__main__':
 	X_patches = imp.patch_features
 	X_patches_hat = imp.merge_features_dominant_colors(isImage=False)
 	y_patches = imp.patch_labels
-
-	# with open(r"image-pipeline2.pickle", "wb") as output_file:
-	# 	cPickle.dump(imp, output_file)
 	
 	#Run Dummy Models
-	# print 'Running Dummy Models'
-	# #svModel = svm(X_tilda, y, cv=8)
-	# rfModel = random_forest(X_patches_hat, y_patches, cv=5)
-	# gbModel = gradient_boosting(X_patches_hat, y_patches, cv=5)
-	# knnModel = knn(X_patches_hat, y_patches, cv=5)
-	svm(X_patches_hat, y_patches, cv=5)
-	mnbModel = multinomial_naivebayes(X_patches_hat, y_patches, cv=5)
+	gbModel = GradientBoostingClassifier()
+	parameters = {'loss': ['deviance', 'exponential'],
+				  'learning_rate': [0.01, 0.05, 0.1],
+				  'n_estimators': [1000], 
+				  'max_depth': [3, 5, 10],
+				  'max_features': [None, 'sqrt', 'log2']}
+
+
+	clf = GridSearchCV(estimator=gbModel, 
+		  param_grid=parameters, scoring='f1_weighted', n_jobs=10, 
+		  cv=5, verbose=True)
+	print 'Performing Grid Search'
+	clf.fit(X_patches_hat, y_patches)
+
+	bestModel = clf.best_estimator_
+	print bestModel
+	print 'This has an F1 score of:', clf.best_score_
+	X_train, X_test, y_train, y_test = train_test_split(X_patches_hat, y_patches, test_size=0.2, random_state=23)
+	bestModel.fit(X_train, y_train)
+	printEstimatorScores(bestModel, X_test, y_test)
+
+	with open(r"../Pickled-Models/bestGBModel.pickle", "wb") as output_file:
+		cPickle.dump(bestModel, output_file)
 

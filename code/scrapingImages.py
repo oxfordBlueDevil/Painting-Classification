@@ -12,7 +12,8 @@ def remove_digits(url):
 	return filename
 
 def scrapeImagesFromURL(artist, imageURLs):
-	#os.mkdir('scraped-images')
+	os.chdir('..')
+	os.mkdir('scraped-images')
 	os.chdir('scraped-images')
 	os.mkdir(artist)
 	os.chdir(artist)
@@ -21,6 +22,7 @@ def scrapeImagesFromURL(artist, imageURLs):
 		urllib.urlretrieve(imageURL, filename)
 	os.chdir('..')
 	os.chdir('..')
+	os.chdir('code')
 
 def scraping(artist, artistURL):
 	response = requests.get(artistURL)

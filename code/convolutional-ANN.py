@@ -75,7 +75,7 @@ class EarlyStopping(object):
 
 if __name__ == '__main__':
 	print 'Building Image Pipeline'
-	imp = ImagePipeline('scraped-images')
+	imp = ImagePipeline('../scraped-images')
 	imp.read(sub_dirs = ['Cezanne', 'VanGogh', 'JosephMallordTurner'])
 	#imp.read(sub_dirs = ['Durer', 'Klimt-and-Expressionism'])
 	imp.resize(shape = (256, 256, 3))
@@ -164,5 +164,5 @@ if __name__ == '__main__':
 
 	print classification_report(y_test, y_predictions)
 
-	with open(r"three-artist-convolutional-neuralNet.pickle", "wb") as output_file:
+	with open(r"../Pickled-Models/three-artist-convolutional-neuralNet.pickle", "wb") as output_file:
 		cPickle.dump(nnet, output_file)
