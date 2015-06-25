@@ -3,7 +3,7 @@ from sklearn.metrics import f1_score
 from skimage import io, transform
 from sklearn.feature_extraction.image import extract_patches_2d
 from sklearn.preprocessing import StandardScaler
-from code.pyimage.pipeline import ImagePipeline
+from pyimage.pipeline import ImagePipeline
 import cPickle as pickle
 import numpy as np
 import random
