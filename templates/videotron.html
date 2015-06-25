@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<link rel=stylesheet type="text/css" href="../static/css/videotron.css"></script>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-latest.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700' rel='stylesheet' type='text/css'>
+<script type="text/javascript" src="../static/js/jquery.tubular.js"></script>
+<script>
+        $().ready(function() {
+                $('#wrapper').tubular({videoId: 'lr32BaFjvtc', repeat: true}); 
+        });
+</script>
+
+</head>
+    <title>neuralArt</title>
+</head>
+
+<body>
+        <div id="wrapper" style="position: relative; z-index: 99;">
+                <div class="social">
+                </div>
+
+                <div class="titles" id="topbar">
+                    <p id="title_link"><a href="/" id="title_link">neuralArt.io</a></p>
+                    <p id="other"><a href="https://www.linkedin.com/in/mikedosorio" id="other">Contact</a></p>
+                    <p id="about"><a href="/about" id="about">About</a></p>
+                </div>
+
+                <div id="boxdiv">
+
+                <br><br><br>
+                
+                <div>
+
+                <form action="upload" method="post" enctype="multipart/form-data">
+                    <input id="file-btn" type="file" name="file" style="color: #262626;"> 
+                    <select id="dropdown" name="classifier"> 
+                      <option value="Arist" selected>Artist</option> 
+                      <option value="Genre">Genre</option> 
+                    </select>
+                    <br /><br />
+                    <input id="submit-predict" type="submit" name="vp" value="Predict Image">
+                    <input id="submit-view" class="view-btn" type="submit"  name="vp" value="View Image">
+
+                </form>
+                </div>
+        </div>
+</body>
+</html>

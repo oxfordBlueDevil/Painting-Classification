@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
-          rel="stylesheet">
-  </head>
-  <body>
+<head>
+<link rel=stylesheet type="text/css" href="../static/css/upload.css"></script>
+</head>
+    <title>neuralArt: Prediction</title>
+</head>
+
+<body>
     <div class="container">
-      <div class="header">
-        <h3 class="text-muted">Prediction</h3>
-      </div>
-      <hr/>
-      <div>
-      <div id="results">
-        <img src="{{ img_path }}">
-        <br /> {{ prediction }} <br />
-      </div>
+        <div class="header">
+          <h3 class="text-muted">Prediction</h3>
+        </div>
+
+        <div class="titles" id="topbar">
+            <p id="title_link"><a href="/" id="title_link">neuralArt.io: Predictions</a></p>
+            <p id="other"><a href="https://www.linkedin.com/in/mikedosorio" id="other">Contact</a></p>
+            <p id="about"><a href="/about" id="about">About</a></p>
+        </div>
+
+        <hr/>
+        <div>
+        <div id="results"  align="center">
+          <img src="{{ img_path }}" height="640" width="480">
+          <br /> <br />
+          <br /> <center> <font color="#262626"> {{ prediction }} </font></center> <br />
+        </div>
     </div>
   </body>
 </html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel=stylesheet type="text/css" href="../static/css/view.css"></script>
+</head>
+    <title>neuralArt: View</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+          <h3 class="text-muted">Prediction</h3>
+        </div>
+
+        <div class="titles" id="topbar">
+            <p id="title_link"><a href="/" id="title_link">neuralArt.io: Predictions</a></p>
+            <p id="other"><a href="https://www.linkedin.com/in/mikedosorio" id="other">Contact</a></p>
+            <p id="about"><a href="/about" id="about">About</a></p>
+        </div>
+
+        <hr/>
+        <div>
+        <div id="results"  align="center">
+          <img src="{{ img_path }}" height="640" width="480">
+          <br /> <br />
+        </div>
+
+        <br ></br >
+
+        <div id="boxdiv">
+
+        <br><br><br>
+
+        <div>
+        <form action="predict" method="post" enctype="multipart/form-data">
+          <input id="image" name="image_path" value="{{ img_path }}">
+          <input id="submit-btn" type="submit" value="Predict Image">
+          <select id="dropdown" name="classifier"> 
+            <option value="Arist" selected>Artist</option> 
+            <option value="Genre">Genre</option> 
+          </select>
+        <br /><br />
+        </form>
+        </div>
+        </div>
+  </body>
+<script>  
+  var x = document.getElementById("image");
+  x.setAttribute("type", "hidden");  
+</script>
+</html>

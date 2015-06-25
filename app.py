@@ -25,12 +25,34 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
+def classifyPainting(classifier, f_name):
+    if classifier == 'Genre':
+        imagePipeline = preProcessUploadedImage(f_name, app.portraitNN, isArtist=False)
+    else:
+        imagePipeline = preProcessUploadedImage(f_name, app.artistNN, isArtist=True)
+    imagePipeline.preprocessing()
+    imagePipeline.vectorize()
+    return imagePipeline.predict()
+
 # This route will show a form to perform an AJAX request
 # jQuery is loaded to execute the request and update the
 # value of the operation
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('videotron.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+# Route that will process the file upload
+@app.route('/predict', methods=['POST'])
+def viewImage():
+    f_name = request.form['image_path']
+    classifier = request.form['classifier']
+    prediction = classifyPainting(classifier, f_name)
+    return render_template('upload.html', prediction=prediction, img_path=f_name)
+
 
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
@@ -38,6 +60,7 @@ def upload():
     # Get the name of the uploaded file
     file = request.files['file']
     # Check if the file is one of the allowed types/extensions
+    classifier = request.form['classifier']
     if file and allowed_file(file.filename):
         # Make the filename safe, remove unsupported chars
         filename = secure_filename(file.filename)
@@ -47,11 +70,11 @@ def upload():
         file.save(os.path.join(f_name))
         # Redirect the user to the uploaded_file route, which
         # will basicaly show on the browser the uploaded file
-
-        imagePipeline = preProcessUploadedImage(f_name, app.portraitNN, isArtist=False)
-        imagePipeline.preprocessing()
-        imagePipeline.vectorize()
-        prediction = imagePipeline.predict()
+    view_predict = request.form['vp']
+    if view_predict == 'View Image':
+        return render_template('view.html', img_path=f_name)
+    else:
+        prediction = classifyPainting(classifier, f_name)
 
         return render_template('upload.html', prediction=prediction, img_path=f_name)
 

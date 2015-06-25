@@ -213,6 +213,13 @@ class ImagePipeline(object):
             self.img_lst2 = new_img_lst2
 
     def transform_patches(self, func, params):
+        """
+        Takes a function and apply to every patch_arr in self.patches_lst2.
+        Have to option to transform one as  a test case
+
+        :param sub_dir: The index for the image
+        :param img_ind: The index of the category of images
+        """
         new_patches_lst2 = []
         for patch_lst in self.patches_lst2:
             new_patches_lst2.append([func(patch_arr, **params).astype(float) for patch_arr in patch_lst])
@@ -296,11 +303,21 @@ class ImagePipeline(object):
             self.save(shape_str)
 
     def image_to_pixels(self, image_array):
+        """
+        Convert Image Array to Pixels
+        """
         nrow, ncol, depth = image_array.shape 
         lst_of_pixels = [image_array[irow][icol] for irow in range(nrow) for icol in range(ncol)]
         return lst_of_pixels
 
     def images_to_dominant_colors(self, n_clusters=3):
+        """
+        Uses kmeans to extract the most dominant colors
+        for all images in self.img_lst2
+
+        :param n_clusters: Designate the number of dominant colors to form as well as 
+        the number of centroids to generate.
+        """
         print 'Determining the dominant colors for each image in the pipeline'
         image_dominant_colors = []
         for img_list in self.img_lst2:
@@ -313,6 +330,9 @@ class ImagePipeline(object):
         self.dominant_colors = np.r_[image_dominant_colors]
 
     def merge_features_dominant_colors(self, isImage=True):
+        """
+        Merge the features matrix with the self.dominant_colors matrix
+        """
         if isImage:
             return np.concatenate((self.features, self.dominant_colors), axis = 1)
         else:
