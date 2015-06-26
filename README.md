@@ -1,10 +1,15 @@
+###Mike Osorio, Galvanize DSI (fka Zipfian Academy), 4/13/2015 - 07/10/2015
+
+### neuralArt.io
+* This is my Data Science capstone project for the Galvanize DSI. I was first drawn by the idea of teaching machines how to detect and categorize objects and scenes in images and videos. The idea of teaching a machine how to perform large-scale fine art painting classification and be capable to make semantic-level judgements, such as predicting a painting's genre (portrait or landscape) and its artist captured my curiousity about computer vision and motivated me to take on this challenge as my capstone project. 
+
 ###Preprocessing
 
 ####scrapingImages.py
-* This module scrapes high-resolution paintings for different European Artists from a Picasa Web Album.
-The downloaded image resolutions are around 800 x 800. The module then stores them in individual directories corresponding to different artists.
+* This module scrapes high-resolution paintings for different European Artists from a Picasa Web Album to create our dataset. 
+The downloaded image resolutions are around 800 x 800. The script saves all paintings in artists subdirectories in a master directoy called scraped-images.
 
-####pyimage.pipeline.py
+####mycode.pipeline.py
 * This module allows us to build our image pipeline and creates the capability to perform a variety of image transformation filters for our EDA & Feature extraction phase.
     1. Denoise Bilateral Denoising
     2. Total Variance Denoising
@@ -15,9 +20,13 @@ The downloaded image resolutions are around 800 x 800. The module then stores th
 
 * We also created an implemenation for dominant color exctrations. We use mini batch k means to extract the most dominant colors for each image in our image pipeline.
 
+* Furthermore, we implented patch extraction for each of our images in our image pipeline. By extracting random patches, we can increase our training set immensly. Without this scheme, our supervised learning models would suffer from substantial overfitting.
+
 
 ### Portrait vs. Landscape  (portrait-landscape-modelling.py & portrait-Neural-Network.py)
-* To test whether we can build an painting image detection model, we decided to experiment with Random Forest, Gradient Boosting, Support Vector Machine, K Nearest Neighbor Classifiers, and a Neural Network to determine whether an image is a Portrait painting or a Landscape painting. 
+* Before building our supervised learning models, we preprocessed our images. We resized our images to 480 x 480, extracted 30 random 80 x 96 patches from the 480 x 480 images, calculated the dominant colors for each patch, grayscaled them, applied total variation denoising, and implemented canny edge detection. 
+
+* To test whether we can build an painting image detection model, we decided to experiment with Random Forest, Gradient Boosting, Support Vector Machine, and K Nearest Neighbor Classifiers to determine whether an image is a Portrait painting or a Landscape painting. 
 
 * We obtained the following F1 scores by cross-validation where K = 8:
 	- RandomForestClassifier(n_estimators=1000, oob_score=True):
@@ -28,16 +37,19 @@ The downloaded image resolutions are around 800 x 800. The module then stores th
            metric_params=None, n_neighbors=5, p=2, weights='uniform'):
 		- F1 Score: 0.59 (+/- 0.00)
 
-* We built a Neural Network with three hidden layer which each have 512 outputs. Here are the results:
+  * After cross-validation and experimentation, the Random Forest Classifier where number of estimators is 1000 proved to have highest the F1 score of the non-deep learning classifiers we tested. Thus, we've chosen this RandomForestClassifier Model for our baseline model to determine whether whether an image is a Portrait painting or a Landscape painting. For now, we look to take on a much challenging problem.
 
-  input                 (None, 23040)           produces   23040 outputs
-  hidden1               (None, 512)             produces     512 outputs
-  hidden2               (None, 512)             produces     512 outputs
-  hidden3               (None, 512)             produces     512 outputs
-  output                (None, 3)               produces       3 outputs
-  epoch    train loss    valid loss    train/val    valid acc  dur
+* For our deep learning, we only had to resize our images to 360 x 360, extracted 30 random 80 x 96 patches from the 360 x 360 images for our data preprocessing. After preprocessing, we built a Neural Network with three hidden layer which each have 512 outputs. Here are the results:
+
+  - input                 (None, 23040)           produces   23040 outputs
+  - hidden1               (None, 512)             produces     512 outputs
+  - hidden2               (None, 512)             produces     512 outputs
+  - hidden3               (None, 512)             produces     512 outputs
+  - output                (None, 3)               produces       3 outputs
+
 
 -------  ------------  ------------  -----------  -----------  ------
+epoch    train loss    valid loss    train/val    valid acc  dur
       1       0.66219       0.60958      1.08630      0.69423  41.58s
       2       0.57866       0.59109      0.97897      0.70242  40.85s
       3       0.55572       0.58235      0.95428      0.70537  37.79s
@@ -77,12 +89,14 @@ f1 score: 0.664699683878
 
 avg / total       0.72      0.73      0.72      5802
 
-* After cross-validation and experimentation, the Random Forest Classifier where number of estimators is 1000 proved to have highest the F1 score of the non-deep learning classifiers we tested. Thus, we've chosen this RandomForestClassifier Model for our baseline model to determine whether whether an image is a Portrait painting or a Landscape painting. For now, we look to take on a much challenging problem.
-
 * We've selected the Neural Network as our MVP Portrait Classification.
 
 ### Artist Classification (neuralNet.py)
-* To test whether we can build an painting image detection model, we decided to experiment with Random Forest, Gradient Boosting, Support Vector Machine, K Nearest Neighbor Classifiers, and a Neural Network to determine whether an image is a Portrait painting or a Landscape painting. 
+* We chose the following three painters for our classification dataset: Cezanne, Van Gogh, and Joseph Mallord Turner.
+
+* Before building our supervised learning models, we preprocessed our images. We resized our images to 480 x 480, extracted 30 random 80 x 96 patches from the 480 x 480 images, calculated the dominant colors for each patch, grayscaled them, applied total variation denoising, and implemented canny edge detection.
+
+* To test whether we can build an painting image detection model, we decided to experiment with Random Forest, Gradient Boosting, Support Vector Machine, K Nearest Neighbor Classifiers, and a Neural Network to determine the painting's artist. 
 
 * We obtained the following F1 scores by cross-validation where K = 8:
     - RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
@@ -103,15 +117,16 @@ avg / total       0.72      0.73      0.72      5802
            metric_params=None, n_neighbors=5, p=2, weights='uniform')
         - F1 CV Score: 0.50 (+/- 0.01)
 
-* We built a Neural Network with three hidden layer which each have 512 outputs. Here are the results:
+* For our deep learning, we only had to resize our images to 360 x 360, extracted 30 random 80 x 96 patches from the 360 x 360 images for our data preprocessing. We built a Neural Network with three hidden layer which each have 512 outputs. Here are the results:
 
-  input                 (None, 23040)           produces   23040 outputs
+  - input                 (None, 23040)           produces   23040 outputs
   hidden1               (None, 512)             produces     512 outputs
   hidden2               (None, 512)             produces     512 outputs
   hidden3               (None, 512)             produces     512 outputs
   output                (None, 3)               produces       3 outputs
 
 -------  ------------  ------------  -----------  -----------  ------
+epoch    train loss    valid loss    train/val    valid acc  dur
       1       0.79505       0.73670      1.07921      0.68776  24.97s
       2       0.69658       0.69073      1.00847      0.70283  26.31s
       3       0.65909       0.66561      0.99021      0.70869  23.67s
@@ -154,3 +169,7 @@ f1 score: 0.70944276481
 avg / total       0.71      0.72      0.71      4404
 
 * We've selected the Neural Network as our MVP Multi-Artist Classification.
+
+### Next Steps to Improve Classifier
+
+* Dig deeper into the rabbit hole of deep learning by implementing a convultional neural network.
