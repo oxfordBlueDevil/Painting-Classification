@@ -177,12 +177,18 @@ epoch    train loss    valid loss    train/val    valid acc
 
 * We've selected the Neural Network as our MVP Multi-Artist Classification.
 
+-------  ------------  ------------  -----------  -----------  ------
+
 ### Web App 
 
 #### mvpNeuralNet.py
 
 #### uploadImagePipeline.py
 
+-------  ------------  ------------  -----------  -----------  ------
+
 ### Next Steps to Improve Classifier
 
 * Dig deeper into the rabbit hole of deep learning by implementing a convultional neural network (). We wrote a convultional neural network which is a knock Alex Krizhevsky's ImageNet NN Classifier.
+
+-------  ------------  ------------  -----------  -----------  ------
