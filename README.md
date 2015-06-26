@@ -3,6 +3,8 @@
 ### neuralArt.io
 * This is my Data Science capstone project for the Galvanize DSI. I was first drawn by the idea of teaching machines how to detect and categorize objects and scenes in images and videos. The idea of teaching a machine how to perform large-scale fine art painting classification and be capable to make semantic-level judgements, such as predicting a painting's genre (portrait or landscape) and its artist captured my curiousity about computer vision and motivated me to take on this challenge as my capstone project. 
 
+-------  ------------  ------------  -----------  -----------  ------
+
 ###Preprocessing
 
 ####scrapingImages.py
@@ -22,6 +24,7 @@ The downloaded image resolutions are around 800 x 800. The script saves all pain
 
 * Furthermore, we implented patch extraction for each of our images in our image pipeline. By extracting random patches, we can increase our training set immensly. Without this scheme, our supervised learning models would suffer from substantial overfitting.
 
+-------  ------------  ------------  -----------  -----------  ------
 
 ### Portrait vs. Landscape  (portrait-landscape-modelling.py & portrait-Neural-Network.py)
 * Before building our supervised learning models, we preprocessed our images. We resized our images to 480 x 480, extracted 30 random 80 x 96 patches from the 480 x 480 images, calculated the dominant colors for each patch, grayscaled them, applied total variation denoising, and implemented canny edge detection. 
@@ -39,7 +42,7 @@ The downloaded image resolutions are around 800 x 800. The script saves all pain
 
   * After cross-validation and experimentation, the Random Forest Classifier where number of estimators is 1000 proved to have highest the F1 score of the non-deep learning classifiers we tested. Thus, we've chosen this RandomForestClassifier Model for our baseline model to determine whether whether an image is a Portrait painting or a Landscape painting. For now, we look to take on a much challenging problem.
 
-* For our deep learning, we only had to resize our images to 360 x 360, extracted 30 random 80 x 96 patches from the 360 x 360 images for our data preprocessing. After preprocessing, we built a Neural Network with three hidden layer which each have 512 outputs. Here are the results:
+* For our deep learning, we only had to resize our images to 360 x 360, extracted 30 random 80 x 96 patches from the 360 x 360 images for our data preprocessing. After preprocessing, we built a Neural Network with three hidden layers which each have 512 outputs. Here are the results:
 
   - input                 (None, 23040)           produces   23040 outputs
   - hidden1               (None, 512)             produces     512 outputs
@@ -92,7 +95,9 @@ epoch    train loss    valid loss    train/val    valid acc  dur
 
 * We've selected the Neural Network as our MVP Portrait Classification.
 
-### Artist Classification (neuralNet.py)
+-------  ------------  ------------  -----------  -----------  ------
+
+### Artist Classification (ArtistLearning.py & neuralNet.py)
 * We chose the following three painters for our classification dataset: Cezanne, Van Gogh, and Joseph Mallord Turner.
 
 * Before building our supervised learning models, we preprocessed our images. We resized our images to 480 x 480, extracted 30 random 80 x 96 patches from the 480 x 480 images, calculated the dominant colors for each patch, grayscaled them, applied total variation denoising, and implemented canny edge detection.
@@ -118,7 +123,7 @@ epoch    train loss    valid loss    train/val    valid acc  dur
            metric_params=None, n_neighbors=5, p=2, weights='uniform')
         - F1 CV Score: 0.50 (+/- 0.01)
 
-* For our deep learning, we only had to resize our images to 360 x 360, extracted 30 random 80 x 96 patches from the 360 x 360 images for our data preprocessing. We built a Neural Network with three hidden layer which each have 512 outputs. Here are the results:
+* For our deep learning, we only had to resize our images to 360 x 360, extracted 30 random 80 x 96 patches from the 360 x 360 images for our data preprocessing. We built a Neural Network with three hidden layers which each have 512 outputs. Here are the results:
 
   - input                 (None, 23040)           produces   23040 outputs
   hidden1               (None, 512)             produces     512 outputs
@@ -172,6 +177,12 @@ epoch    train loss    valid loss    train/val    valid acc
 
 * We've selected the Neural Network as our MVP Multi-Artist Classification.
 
+### Web App 
+
+#### mvpNeuralNet.py
+
+#### uploadImagePipeline.py
+
 ### Next Steps to Improve Classifier
 
-* Dig deeper into the rabbit hole of deep learning by implementing a convultional neural network.
+* Dig deeper into the rabbit hole of deep learning by implementing a convultional neural network (). We wrote a convultional neural network which is a knock Alex Krizhevsky's ImageNet NN Classifier.
