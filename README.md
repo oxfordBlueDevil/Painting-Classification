@@ -126,10 +126,10 @@ epoch    train loss    valid loss    train/val    valid acc  dur
 * For our deep learning, we only had to resize our images to 360 x 360, extracted 30 random 80 x 96 patches from the 360 x 360 images for our data preprocessing. We built a Neural Network with three hidden layers which each have 512 outputs. Here are the results:
 
   - input                 (None, 23040)           produces   23040 outputs
-  hidden1               (None, 512)             produces     512 outputs
-  hidden2               (None, 512)             produces     512 outputs
-  hidden3               (None, 512)             produces     512 outputs
-  output                (None, 3)               produces       3 outputs
+  - hidden1               (None, 512)             produces     512 outputs
+  - hidden2               (None, 512)             produces     512 outputs
+  - hidden3               (None, 512)             produces     512 outputs
+  - output                (None, 3)               produces       3 outputs
 
 -------  ------------  ------------  -----------  -----------  ------
 epoch    train loss    valid loss    train/val    valid acc  
@@ -184,6 +184,8 @@ epoch    train loss    valid loss    train/val    valid acc
 #### mvpNeuralNet.py
 
 #### uploadImagePipeline.py
+
+#### app.py
 
 -------  ------------  ------------  -----------  -----------  ------
 
