@@ -83,7 +83,7 @@ epoch    train loss    valid loss    train/val    valid acc  dur
      30       0.34235       0.54962      0.62289      0.72670  35.12s
 
 * f1 score: 0.664699683878
-             precision    recall  f1-score   support
+*             precision    recall  f1-score   support
 
           0       0.73      0.81      0.77      3271
           1       0.71      0.62      0.66      2531
@@ -162,7 +162,7 @@ epoch    train loss    valid loss    train/val    valid acc
 
 
 * f1 score: 0.70944276481
-             precision    recall  f1-score   support
+*             precision    recall  f1-score   support
 
           0       0.41      0.33      0.37       635
           1       0.77      0.78      0.78      2534
