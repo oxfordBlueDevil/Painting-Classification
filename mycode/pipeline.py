@@ -122,6 +122,7 @@ class ImagePipeline(object):
         Read images from each sub directories into a list of matrix (self.img_lst2)
 
         :param sub_dirs: Tuple contain all the sub dir names, else default to all sub dirs
+        :param subsample: Only take a certain # of images from each subdirectoy
         """
         # Empty the variables containing the image arrays and image names, features and labels
         self._empty_variables()
@@ -136,8 +137,7 @@ class ImagePipeline(object):
 
                 img_lst = [io.imread(os.path.join(sub_dir, fname)) for fname in img_names]
                 self.img_lst2.append(img_lst)
-
-        else:            
+        else:
             for sub_dir in self.sub_dirs:
                 img_names = filter(self._accpeted_file_format, os.listdir(sub_dir))
                 self.img_names2.append(img_names)
@@ -231,18 +231,22 @@ class ImagePipeline(object):
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
+        :param isImage: If True, perform operations on images in img_lst2.
+         If False, perform operations on patches in patch_lst.        
         """
         if isImage:
             self.transform(color.rgb2gray, {}, sub_dir=sub_dir, img_ind=img_ind)
         else:
             self.transform_patches(color.rgb2gray, {})
 
-    def canny(self, sigma = 2.5, sub_dir=None, img_ind=None, isImage=True):
+    def canny(self, sigma=2.5, sub_dir=None, img_ind=None, isImage=True):
         """
         Apply the canny edge detection algorithm to all the images in self.img_lst2
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
+        :param isImage: If True, perform operations on images in img_lst2.
+         If False, perform operations on patches in patch_lst.        
         """
         if isImage:
             self.transform(feature.canny, dict(sigma=sigma), sub_dir=sub_dir, img_ind=img_ind)
@@ -255,25 +259,29 @@ class ImagePipeline(object):
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
+        :param isImage: If True, perform operations on images in img_lst2.
+         If False, perform operations on patches in patch_lst.
         """
         if isImage:
             self.transform(filters.sobel, {}, sub_dir=sub_dir, img_ind=img_ind)
         else:
             self.transform_patches(filters.sobel, {})
 
-    def denoise_bilateral(self, sigma_range = 0.15, sub_dir=None, img_ind=None, isImage=True):
+    def denoise_bilateral(self, sigma_range=0.15, sub_dir=None, img_ind=None, isImage=True):
         """
         Apply to Bi-lateral denoise to all the images in self.img_lst2
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
+        :param isImage: If True, perform operations on images in img_lst2.
+         If False, perform operations on patches in patch_lst.
         """
         if isImage:
             self.transform(restoration.denoise_bilateral,
-                       dict(sigma_range = sigma_range),
-                       sub_dir=sub_dir, img_ind=img_ind)
+                        dict(sigma_range = sigma_range),
+                        sub_dir=sub_dir, img_ind=img_ind)
         else:
-            self.transform_patches(estoration.denoise_bilateral, dict(sigma_range = sigma_range))
+            self.transform_patches(estoration.denoise_bilateral, dict(sigma_range=sigma_range))
 
     def tv_denoise(self, weight=2, multichannel=True, sub_dir=None, img_ind=None, isImage=True):
         """
@@ -281,6 +289,8 @@ class ImagePipeline(object):
 
         :param sub_dir: The sub dir (if you want to test the transformation on 1 image)
         :param img_ind: The index of the image within the chosen sub dir
+        :param isImage: If True, perform operations on images in img_lst2.
+         If False, perform operations on patches in patch_lst.
         """
         if isImage:
             self.transform(restoration.denoise_tv_chambolle,
@@ -323,7 +333,7 @@ class ImagePipeline(object):
         for img_list in self.img_lst2:
             for img_arr in img_list:
                 img_Pixels = np.r_[self.image_to_pixels(img_arr)]
-                KMeans_Model = MiniBatchKMeans(n_clusters = n_clusters)
+                KMeans_Model = MiniBatchKMeans(n_clusters=n_clusters)
                 KMeans_Model.fit(img_Pixels)
                 clusters = KMeans_Model.cluster_centers_
                 image_dominant_colors.append(np.ravel(clusters))
@@ -332,15 +342,21 @@ class ImagePipeline(object):
     def merge_features_dominant_colors(self, isImage=True):
         """
         Merge the features matrix with the self.dominant_colors matrix
+
+        :param isImage: If True, perform operations on images in img_lst2.
+         If False, perform operations on patches in patch_lst.
+        :return numpy array of this combination
         """
         if isImage:
-            return np.concatenate((self.features, self.dominant_colors), axis = 1)
+            return np.concatenate((self.features, self.dominant_colors), axis=1)
         else:
-            return np.concatenate((self.patch_features, self.patch_dominant_colors), axis = 1)
+            return np.concatenate((self.patch_features, self.patch_dominant_colors), axis=1)
 
     def extract_patch(self, img_array, patch_size=(80,96), max_patches=30):
         """
         Reshape a 2D image into a collection of patches and extract it into a dedicated array
+
+        :return list of patches extracted from the image
         """
         patches = extract_patches_2d(img_array, patch_size, max_patches)
         self.n_patches = patches.shape[0]
@@ -384,7 +400,7 @@ class ImagePipeline(object):
     def _vectorize_patch_features(self):
         """
         Take a list of patches and vectorize all the patches. Returns a feature matrix where each
-        row represents an image
+        row represents a patch image
         """
         row_tup = tuple(patch_arr.ravel()[np.newaxis, :]
                         for patch_lst in self.patches_lst2 for patch_arr in patch_lst)
@@ -412,6 +428,9 @@ class ImagePipeline(object):
         """
         Return (feature matrix, the response) if output is True, otherwise set as instance variable.
         Run at the end of all transformations
+
+        :param isImage: If True, perform operations on images in img_lst2.
+         If False, perform operations on patches in patch_lst.
         """
         print 'Generating the Features Matrix'
         if isImage:
@@ -423,5 +442,3 @@ class ImagePipeline(object):
                 self.patches_to_dominant_colors(n_clusters=3)
             self._vectorize_patch_features()
             self._vectorize_patch_labels()
-
-

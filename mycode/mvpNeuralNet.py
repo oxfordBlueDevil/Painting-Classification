@@ -10,27 +10,61 @@ import random
 
 class ArtistClassifier(object):
 	def __init__(self):
+		"""
+		Unpicles trained neural network
+		"""
 		with open(r"Pickled-Models/three-artist-neural-network.pickle", "rb") as nn:
 			self.nn = pickle.load(nn)
 	
 	def predict(self, X_test):
+		"""
+		Perform clasification on samples in X_test
+
+		:param X_test: test samples
+		"""
 		return self.nn.predict(X_test)
 
 	def f1(self, y_test, y_predictions):
+		"""
+		Compute the F1 Score
+
+		:param y_test: Correct Target Values
+		:param y_predictions: Estimated targets as returned by classifier
+		"""
 		return f1_score(y_test, y_predictions)
 
 class PortraitClassifier(object):
 	def __init__(self):
+		"""
+		Unpicles trained neural network
+		"""
 		with open(r"Pickled-Models/portrait-neural-network.pickle", "rb") as nn:
 			self.nn = pickle.load(nn)
 	
 	def predict(self, X_test):
+		"""
+		Perform clasification on samples in X_test
+
+		:param X_test: test samples
+		"""
 		return self.nn.predict(X_test)
 
 	def f1(self, y_test, y_predictions):
+		"""
+		Compute the F1 Score
+
+		:param y_test: Correct Target Values
+		:param y_predictions: Estimated targets as returned by classifier
+		"""
 		return f1_score(y_test, y_predictions)
 
 def majorityVote(predictions, isArtist=True):
+	"""
+	Perform a vote on the classifications of the patches of test image
+
+	:param isArtist: If True, then use artist label. If False, then use genre label.
+	:return 
+	"""
 	count_arr = []
 	labels = [0, 1, 2]
 	for label in labels:
@@ -40,7 +74,7 @@ def majorityVote(predictions, isArtist=True):
 	if isArtist:
 		return labelToArtist(np.argmax(count_arr))
 	else:
-		return labelToStyle(np.argmax(count_arr))
+		return labelToGenre(np.argmax(count_arr))
 
 def labelToArtist(label):
 	artists = ['Cezanne', 'Van Gogh', 'Joseph Mallord Turner']
@@ -48,7 +82,7 @@ def labelToArtist(label):
 	d = {label: artist for (label, artist) in zip(labels, artists)}
 	return d[label]
 
-def labelToStyle(label):
+def labelToGenre(label):
 	artists = ['Portrait', 'Not A Portrait']
 	labels = [0, 1]
 	d = {label: artist for (label, artist) in zip(labels, artists)}
