@@ -11,7 +11,7 @@ import random
 class ArtistClassifier(object):
 	def __init__(self):
 		"""
-		Unpicles trained neural network
+		Unpickles trained neural network
 		"""
 		with open(r"Pickled-Models/three-artist-neural-network.pickle", "rb") as nn:
 			self.nn = pickle.load(nn)
@@ -36,7 +36,7 @@ class ArtistClassifier(object):
 class PortraitClassifier(object):
 	def __init__(self):
 		"""
-		Unpicles trained neural network
+		Unpickles trained neural network
 		"""
 		with open(r"Pickled-Models/portrait-neural-network.pickle", "rb") as nn:
 			self.nn = pickle.load(nn)
@@ -63,7 +63,7 @@ def majorityVote(predictions, isArtist=True):
 	Perform a vote on the classifications of the patches of test image
 
 	:param isArtist: If True, then use artist label. If False, then use genre label.
-	:return 
+	:return label
 	"""
 	count_arr = []
 	labels = [0, 1, 2]
@@ -77,12 +77,24 @@ def majorityVote(predictions, isArtist=True):
 		return labelToGenre(np.argmax(count_arr))
 
 def labelToArtist(label):
+	"""
+	Convert numeric label to corresponding artist label
+
+	:param label: numeric label
+	:return artist label
+	"""
 	artists = ['Cezanne', 'Van Gogh', 'Joseph Mallord Turner']
 	labels = [0, 1, 2]
 	d = {label: artist for (label, artist) in zip(labels, artists)}
 	return d[label]
 
 def labelToGenre(label):
+	"""
+	Convert numeric label to corresponding genre label
+
+	:param label: numeric label
+	:return genre label
+	"""
 	artists = ['Portrait', 'Not A Portrait']
 	labels = [0, 1]
 	d = {label: artist for (label, artist) in zip(labels, artists)}
