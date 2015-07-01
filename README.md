@@ -1,4 +1,4 @@
-###Mike Osorio, Galvanize DSI (fka Zipfian Academy), 4/13/2015 - 07/10/2015
+#Mike Osorio, Galvanize DSI (fka Zipfian Academy), 4/13/2015 - 07/10/2015
 
 ##neuralArt.io
 * This is my Data Science capstone project for the Galvanize DSI. I was first drawn by the idea of teaching machines how to detect and categorize objects and scenes in images and videos. The idea of teaching a machine how to perform large-scale fine art painting classification and be capable to make semantic-level judgements, such as predicting a painting's genre (portrait or landscape) and its artist captured my curiousity about computer vision and motivated me to take on this challenge as my capstone project. 
