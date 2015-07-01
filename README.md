@@ -3,6 +3,11 @@
 ##neuralArt.io
 * This is my Data Science capstone project for the Galvanize DSI. I was first drawn by the idea of teaching machines how to detect and categorize objects and scenes in images and videos. The idea of teaching a machine how to perform large-scale fine art painting classification and be capable to make semantic-level judgements, such as predicting a painting's genre (portrait or landscape) and its artist captured my curiousity about computer vision and motivated me to take on this challenge as my capstone project. 
 
+* During our experimentation phase, we discoverd ML Models (SVC, RF, Gradient Boosting, kNN) that were trained by engineered features from the images did not perform as well as the neural networks.
+
+* App will be hosted here soon.
+
+
 -------  ------------  ------------  -----------  -----------  ------
 ##Code Walk-through
 
@@ -200,7 +205,7 @@ whichever classifier we choose.
 
 -------  ------------  ------------  -----------  -----------  ------
 
-### Next Steps to Improve Classifier
+## Next Steps to Improve Classifier
 
 * Dig deeper into the rabbit hole of deep learning by implementing a convultional neural network (). We wrote a convultional neural network which is a knock Alex Krizhevsky's ImageNet NN Classifier.
 
