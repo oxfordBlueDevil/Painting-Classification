@@ -1,9 +1,10 @@
 ###Mike Osorio, Galvanize DSI (fka Zipfian Academy), 4/13/2015 - 07/10/2015
 
-### neuralArt.io
+##neuralArt.io
 * This is my Data Science capstone project for the Galvanize DSI. I was first drawn by the idea of teaching machines how to detect and categorize objects and scenes in images and videos. The idea of teaching a machine how to perform large-scale fine art painting classification and be capable to make semantic-level judgements, such as predicting a painting's genre (portrait or landscape) and its artist captured my curiousity about computer vision and motivated me to take on this challenge as my capstone project. 
 
 -------  ------------  ------------  -----------  -----------  ------
+##Code Walk-through
 
 ###Preprocessing
 
@@ -20,7 +21,7 @@ The downloaded image resolutions are around 800 x 800. The script saves all pain
     4. Canny edge detector
     5. Sobel edge detector
 
-* We also created an implemenation for dominant color exctrations. We use mini batch k means to extract the most dominant colors for each image in our image pipeline.
+* We also created an implemenation for dominant color exctrations. We use mini batch k means to extract the most dominant colors for each image/patch in our image pipeline.
 
 * Furthermore, we implented patch extraction for each of our images in our image pipeline. By extracting random patches, we can increase our training set immensly. Without this scheme, our supervised learning models would suffer from substantial overfitting.
 
@@ -85,7 +86,7 @@ epoch    train loss    valid loss    train/val    valid acc  dur
      29       0.34888       0.54842      0.63615      0.72712  36.39s
      30       0.34235       0.54962      0.62289      0.72670  35.12s
 
-* f1 score: 0.664699683878
+* f1 score: 0.724699683878
 *             precision    recall  f1-score   support
 
           0       0.73      0.81      0.77      3271
@@ -183,9 +184,19 @@ epoch    train loss    valid loss    train/val    valid acc
 
 #### mvpNeuralNet.py
 
+* Defined our Artist Classifier and Genre Classifier Classes.
+  - Each Class unpickles a trained neural network.
+
+
 #### uploadImagePipeline.py
+* Performs preprocessing on the uploaded image in the web app and classifies the image according to
+whichever classifier we choose. 
+  - Image is resized on 360 x 360 pixels and broken up into 30 80 x 96 patches
+  - We then predict the classifcations of the patches and perform a majority vote to determine the classification of the full image.
 
 #### app.py
+
+* app.py conatins the whole Flask webapp that allows users to upload an image and obtain a classification of the image's artist/genre.
 
 -------  ------------  ------------  -----------  -----------  ------
 
