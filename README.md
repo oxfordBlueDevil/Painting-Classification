@@ -5,7 +5,7 @@
 
 * During our experimentation phase, we discoverd ML Models (SVC, RF, Gradient Boosting, kNN) that were trained by engineered features from the images did not perform as well as the neural networks.
 
-* App will be hosted here soon.
+* Web App is hosted here: [neuralArt.io](neuralArt.io).
 
 
 -------  ------------  ------------  -----------  -----------  ------
